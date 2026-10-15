@@ -482,21 +482,22 @@
     // Copia la presentación (con alternativa para navegadores antiguos)
     async function copiarPresentacion() {
       const e = leer(LS_ENVIADO); if (!e) return false;
-      try { await navigator.clipboard.writeText(e.texto); return true; }
-      catch (err) {
-        const t = document.createElement('textarea'); t.value = e.texto; t.style.position = 'fixed'; t.style.opacity = '0';
-        document.body.appendChild(t); t.select();
-        let ok = false; try { ok = document.execCommand('copy'); } catch (x) {}
-        t.remove(); return ok;
-      }
+      // Se copia primero de forma inmediata (dentro del clic) y además con la API moderna
+      const t = document.createElement('textarea'); t.value = e.texto; t.style.position = 'fixed'; t.style.opacity = '0';
+      document.body.appendChild(t); t.select();
+      let ok = false; try { ok = document.execCommand('copy'); } catch (x) {}
+      t.remove();
+      try { await navigator.clipboard.writeText(e.texto); ok = true; } catch (err) {}
+      return ok;
     }
     // Un solo botón: copia tu presentación y abre el grupo en una pestaña nueva
-    $('#grupo').addEventListener('click', async (ev) => {
-      ev.preventDefault();
-      const ok = await copiarPresentacion();
+    // El enlace se abre solo (target=_blank): aquí NO se cancela el clic ni se espera nada, para que el navegador no bloquee la pestaña
+    $('#grupo').addEventListener('click', () => {
       const a = $('#avisoCopiado'); a.hidden = false;
-      a.textContent = ok ? '✅ Tu presentación ya está copiada. En el grupo, pégala y envía.' : 'No pudimos copiarla sola. Selecciona el texto de tu tarjeta, cópialo y pégalo en el grupo.';
-      window.open(GRUPO_WHATSAPP, '_blank', 'noopener');   // pestaña nueva; esta página se queda como está
+      a.textContent = 'Tu presentación se está copiando. En el grupo, pégala y envía.';
+      copiarPresentacion().then((ok) => {
+        a.textContent = ok ? '✅ Tu presentación ya está copiada. En el grupo, pégala y envía.' : 'No pudimos copiarla sola. Selecciona el texto de tu tarjeta, cópialo y pégalo en el grupo.';
+      });
       marcar('grupo');
     });
     $('#calendario').addEventListener('click', () => marcar('cal'));
