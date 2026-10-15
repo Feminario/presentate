@@ -114,10 +114,7 @@
     .carrusel .puntos button { width: 9px; height: 9px; padding: 0; border-radius: 50%; background: rgba(255,255,255,.6); box-shadow: 0 0 4px rgba(0,0,0,.3); }
     .carrusel .puntos button.activo { background: #fff; transform: scale(1.3); }
     .frase-final { text-align: center; font-weight: 800; font-size: clamp(17px, 4.6vw, 21px); line-height: 1.4; color: var(--azul); margin: 22px 4px 4px; }
-    .cerrar { margin-top: 16px; width: 100%; background: var(--lima); color: #2F3B12; }
-    .pendiente { text-align: center; font-size: 12.5px; color: var(--suave); margin: 8px 0 0; min-height: 18px; }
-    .despedida { text-align: center; padding: 30px 8px; }
-    .despedida h2 { font-size: 28px; }
+    .despedida { text-align: center; font-weight: 700; font-size: 17px; color: var(--azul-fuerte); margin: 14px 0 0; }
     #confeti { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
     footer { text-align: center; font-size: 12px; color: var(--suave); margin-top: 22px; }
     footer img { width: 28px; height: 28px; vertical-align: middle; margin-right: 6px; }
@@ -285,8 +282,7 @@
           <div class="puntos" id="puntos"></div>
         </div>
         <p class="frase-final">Tu camino para mejorar tus finanzas y crear tu autonomía económica para la vida que quieres comienza hoy.</p>
-        <button type="button" class="cerrar" id="cerrar" disabled>Nos vemos pronto</button>
-        <p class="pendiente" id="pendiente" aria-live="polite"></p>
+        <p class="despedida" id="despedida"></p>
         <p class="nuevo">¿No eres tú? <a id="otroPerfil">Llenar otro perfil</a></p>
       </section>
     </div>
@@ -475,7 +471,7 @@
       $('#tituloHero').textContent = `¡Bienvenida a la comunidad, ${e.nombre}!`;
       $('#textoHero').textContent = 'Ya eres parte del Club 365. Esta es tu tarjeta de presentación.';
       form.hidden = true; $('#progreso').hidden = true; $('#exito').hidden = false;
-      iniciarCarrusel(); actualizarCierre();
+      iniciarCarrusel(); $('#despedida').textContent = `Nos vemos pronto, ${e.nombre}.`;
       if (!sessionStorage.getItem('club365_confeti')) { try { sessionStorage.setItem('club365_confeti', '1'); } catch (x) {} confeti(); }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -498,28 +494,7 @@
       copiarPresentacion().then((ok) => {
         a.textContent = ok ? '✅ Tu presentación ya está copiada. En el grupo, pégala y envía.' : 'No pudimos copiarla sola. Selecciona el texto de tu tarjeta, cópialo y pégalo en el grupo.';
       });
-      marcar('grupo');
     });
-    $('#calendario').addEventListener('click', () => marcar('cal'));
-    $('#calApple').addEventListener('click', () => marcar('cal'));
-
-    // ───────── Checklist: "Nos vemos pronto" se activa al hacer ambas cosas ─────────
-    const LS_HECHO = 'club365_hecho';
-    function marcar(k) { const h = leer(LS_HECHO) || {}; h[k] = true; guardar(LS_HECHO, h); actualizarCierre(); }
-    function actualizarCierre() {
-      const h = leer(LS_HECHO) || {};
-      const falta = [];
-      if (!h.cal) falta.push('sincronizar los eventos');
-      if (!h.grupo) falta.push('enviar tu presentación al grupo');
-      $('#cerrar').disabled = falta.length > 0;
-      $('#pendiente').textContent = falta.length ? 'Para terminar, falta: ' + falta.join(' y ') + '.' : '';
-    }
-    $('#cerrar').addEventListener('click', () => {
-      $('#exito').innerHTML = '<div class="despedida"><h2>¡Nos vemos pronto!</h2><p class="sub">Ya puedes cerrar esta pestaña.</p></div>';
-      $('#tituloHero').textContent = '¡Nos vemos pronto!'; $('#textoHero').textContent = 'Gracias por ser parte de la comunidad.';
-      confeti(); try { window.close(); } catch (e) {}
-    });
-
     // ───────── Carrusel ─────────
     let slide = 0, timerCarrusel;
     function iniciarCarrusel() {
