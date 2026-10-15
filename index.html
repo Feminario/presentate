@@ -87,25 +87,24 @@
     .hp { position: absolute; left: -9999px; height: 0; overflow: hidden; }
     .guardado { font-size: 12px; color: var(--suave); text-align: center; margin-top: 14px; min-height: 16px; }
 
-    /* Pantalla final: checklist */
-    .exito h2 { font-size: 26px; }
-    .contador { display: flex; align-items: center; gap: 12px; margin: 14px 0 18px; font-weight: 700; font-size: 14px; color: var(--azul-fuerte); }
-    .barra { flex: 1; height: 10px; background: var(--borde); border-radius: 99px; overflow: hidden; }
-    .barra i { display: block; height: 100%; width: 25%; background: linear-gradient(90deg, var(--azul), var(--lila)); border-radius: 99px; transition: width .3s; }
-    .lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-    .lista li { display: flex; gap: 14px; align-items: flex-start; padding: 16px; border: 1.5px solid var(--borde); border-radius: 18px; background: #fff; transition: background .2s, border-color .2s; }
-    .lista li.hecho { background: #F3FBE3; border-color: var(--lima); }
-    .check { flex: none; width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid var(--lila); background: #fff; cursor: pointer; display: grid; place-items: center; font-size: 17px; font-weight: 800; color: #fff; padding: 0; margin-top: 2px; }
-    .lista li.hecho .check { background: var(--ok); border-color: var(--ok); }
-    .lista li .cuerpo { flex: 1; min-width: 0; text-align: left; }
-    .lista li b { display: block; font-size: 16px; }
-    .lista li small { display: block; color: var(--suave); font-size: 13px; margin: 2px 0 10px; }
-    .lista .boton, .lista button.accion { padding: 11px 16px; font-size: 14.5px; border-radius: 12px; margin: 0 8px 6px 0; }
-    .vista { text-align: left; background: var(--crema); border-radius: 14px; padding: 12px 14px; white-space: pre-wrap; font-size: 13.5px; margin: 6px 0 10px; }
-    .aviso { background: var(--lima); color: #2F3B12; font-weight: 700; font-size: 13.5px; border-radius: 12px; padding: 10px 12px; margin-top: 8px; }
-    .gracias { margin: 22px 0 4px; padding: 18px 18px; border-radius: 18px; background: linear-gradient(135deg, var(--rosa), var(--lavanda)); color: var(--tinta); font-weight: 600; font-size: 15px; text-align: center; line-height: 1.55; }
-    .gracias strong { color: var(--azul-fuerte); }
-    .nuevo { display: block; text-align: center; margin-top: 18px; font-size: 13px; color: var(--suave); }
+    /* Portada con mensaje (pantalla final) */
+    .portada { position: relative; }
+    .portada-msg { position: absolute; left: 0; right: 0; bottom: 0; padding: 56px 22px 20px; text-align: center; color: #fff; font-weight: 700; font-size: clamp(16px, 4.2vw, 22px); line-height: 1.35; background: linear-gradient(to top, rgba(43,42,71,.86) 0%, rgba(43,42,71,.55) 55%, transparent 100%); text-shadow: 0 1px 6px rgba(0,0,0,.35); }
+    .portada-msg small { display: block; margin-top: 6px; font-weight: 600; font-size: .78em; opacity: .95; }
+
+    /* Pantalla final: tarjeta de perfil */
+    .perfil { text-align: center; }
+    .avatar { width: 150px; height: 150px; border-radius: 50%; margin: 4px auto 14px; background: var(--rosa) url("assets/isotipo.png") center / 52% no-repeat; border: 5px solid #fff; box-shadow: 0 0 0 3px var(--lila), 0 12px 28px rgba(126,132,174,.35); }
+    .avatar.con-foto { background-size: cover; background-position: center; box-shadow: 0 0 0 3px var(--azul), 0 12px 28px rgba(126,132,174,.4); }
+    .perfil h2 { font-size: 26px; margin-bottom: 2px; }
+    .lugar { margin: 0 0 14px; color: var(--suave); font-weight: 600; font-size: 14px; }
+    .vista { text-align: left; background: var(--crema); border-radius: 16px; padding: 16px 18px; white-space: pre-wrap; font-size: 14.5px; line-height: 1.6; margin: 0; }
+    .acciones { display: grid; gap: 12px; margin-top: 18px; }
+    .boton.grande { width: 100%; padding: 16px 18px; font-size: 16px; }
+    .link-suave { text-align: center; font-size: 13px; color: var(--suave); margin-top: -4px; }
+    .link-suave a { color: var(--azul-fuerte); font-weight: 600; }
+    .aviso { background: var(--lima); color: #2F3B12; font-weight: 700; font-size: 13.5px; border-radius: 12px; padding: 10px 12px; text-align: center; }
+    .nuevo { display: block; text-align: center; margin-top: 20px; font-size: 13px; color: var(--suave); }
     .nuevo a { color: var(--azul-fuerte); font-weight: 600; cursor: pointer; }
     footer { text-align: center; font-size: 12px; color: var(--suave); margin-top: 22px; }
     footer img { width: 28px; height: 28px; vertical-align: middle; margin-right: 6px; }
@@ -114,12 +113,12 @@
 <body>
   <header class="hero">
     <img class="logo" src="assets/logo-nombre.png" alt="Feminario">
-    <h1>¡Bienvenida al Club 365! Cuéntanos quién eres 💜</h1>
-    <p>Este formulario nos ayuda a conocerte y a presentarte a las demás mujeres de la comunidad. Toma menos de 5 minutos.</p>
+    <h1 id="tituloHero">¡Bienvenida al Club 365! Cuéntanos quién eres 💜</h1>
+    <p id="textoHero">Este formulario nos ayuda a conocerte y a presentarte a las demás mujeres de la comunidad. Toma menos de 5 minutos.</p>
   </header>
 
   <main class="contenedor">
-    <div class="portada"><img src="assets/foto-fundadoras.jpg" alt="Andrea y Valentina, fundadoras de Feminario"></div>
+    <div class="portada"><img id="portadaImg" src="assets/foto-fundadoras.jpg" alt="Andrea y Valentina, fundadoras de Feminario"><div class="portada-msg" id="portadaMsg" hidden>Gracias por ser parte de la revolución que está por y para la autonomía económica de las mujeres.<small>Esto es solo el inicio 💜</small></div></div>
 
     <div class="tarjeta" id="tarjeta">
       <div class="progreso" id="progreso" aria-hidden="true"><span class="activo"></span><span></span><span></span></div>
@@ -251,33 +250,20 @@
         <p class="guardado" id="guardado" aria-live="polite"></p>
       </form>
 
-      <!-- ÉXITO: checklist -->
+      <!-- ÉXITO: tarjeta de perfil -->
       <section class="exito" id="exito" hidden>
-        <h2>¡Listo, <span id="nombreOk"></span>! 🎉</h2>
-        <p>Tu perfil ya llegó. Completa estos pasos para terminar de unirte; cada uno se abre en una pestaña nueva, así no pierdes esta página.</p>
-        <div class="contador"><span id="contador">1 de 4</span><div class="barra"><i id="barraLista"></i></div></div>
-
-        <ol class="lista" id="lista">
-          <li data-clave="perfil" class="hecho">
-            <button type="button" class="check" disabled aria-label="Hecho">✓</button>
-            <div class="cuerpo"><b>Perfil enviado</b><small>Gracias por contarnos quién eres.</small></div>
-          </li>
-          <li data-clave="grupo">
-            <button type="button" class="check" aria-label="Marcar como hecho"></button>
-            <div class="cuerpo"><b>Únete al grupo y preséntate</b><small>Al tocar el botón copiamos tu presentación automáticamente y se abre WhatsApp. Cuando estés dentro del grupo, <strong>pégala</strong> (mantén presionado el cuadro de mensaje y elige Pegar) y envíala.</small>
-              <div class="vista" id="vista"></div>
-              <a class="boton primario" id="grupo" target="_blank" rel="noopener">💬 Copiar presentación y unirme al grupo</a>
-              <button type="button" class="accion claro" id="copiar">📋 Copiar de nuevo</button>
-              <div class="aviso" id="avisoCopiado" hidden></div></div>
-          </li>
-          <li data-clave="calendario">
-            <button type="button" class="check" aria-label="Marcar como hecho"></button>
-            <div class="cuerpo"><b>Agrega los eventos del Club a tu calendario</b><small>Se abre en una pestaña nueva. Las citas se actualizan solas.</small>
-              <a class="boton primario" id="calGoogle" target="_blank" rel="noopener">📅 Google Calendar</a>
-              <a class="boton secundario" id="calApple" target="_blank" rel="noopener">🍎 iPhone, Mac u Outlook</a></div>
-          </li>
-        </ol>
-        <p class="gracias">💜 Gracias por ser parte de la <strong>revolución</strong> que está por y para la <strong>autonomía económica de las mujeres</strong>.<br>Esto es solo el inicio.</p>
+        <div class="perfil">
+          <div class="avatar" id="avatar" role="img" aria-label="Tu foto"></div>
+          <h2><span id="nombreOk"></span></h2>
+          <p class="lugar" id="lugar"></p>
+          <div class="vista" id="vista"></div>
+        </div>
+        <div class="acciones">
+          <a class="boton secundario grande" id="calendario" target="_blank" rel="noopener">📅 Sincronizar los eventos del Club</a>
+          <div class="link-suave">¿iPhone, Mac u Outlook? <a id="calApple" target="_blank" rel="noopener">Suscríbete aquí</a></div>
+          <a class="boton primario grande" id="grupo" target="_blank" rel="noopener">💬 Enviar al grupo y presentarme</a>
+          <div class="aviso" id="avisoCopiado" hidden></div>
+        </div>
         <p class="nuevo">¿No eres tú? <a id="otroPerfil">Llenar otro perfil</a></p>
       </section>
     </div>
@@ -443,39 +429,29 @@
       const nombre = fila.como_te_llaman || fila.nombre_completo;
       const donde = [fila.ciudad, fila.pais].filter(Boolean).join(', ');
       const texto = `¡Hola, comunidad! 💜 Soy ${nombre}${donde ? ' de ' + donde : ''}.\n💼 ${fila.ocupacion}\n🎨 Hobbies: ${fila.hobbies}\n✨ Dato curioso: ${fila.dato_curioso}\n🌸 Entré a Feminario porque: ${fila.razon}`;
-      guardar(LS_ENVIADO, { nombre, texto, checks: { perfil: true } });
+      guardar(LS_ENVIADO, { nombre, texto, lugar: donde, foto: fotoDataUrl });
       borrar(LS_BORRADOR);
       pintarExito();
     }
 
-    // ───────── Pantalla final: checklist ─────────
-    const CLAVES = ['perfil', 'grupo', 'calendario'];
-    function marcar(clave, valor) {
-      const e = leer(LS_ENVIADO); if (!e) return;
-      e.checks = e.checks || {}; e.checks[clave] = valor; guardar(LS_ENVIADO, e); pintarChecks();
-    }
-    function pintarChecks() {
-      const e = leer(LS_ENVIADO) || { checks: {} };
-      let hechos = 0;
-      CLAVES.forEach((c) => {
-        const li = document.querySelector(`#lista li[data-clave="${c}"]`);
-        const ok = !!(e.checks && e.checks[c]);
-        li.classList.toggle('hecho', ok);
-        const chk = li.querySelector('.check'); chk.textContent = ok ? '✓' : '';
-        if (ok) hechos++;
-      });
-      $('#contador').textContent = `${hechos} de ${CLAVES.length}`;
-      $('#barraLista').style.width = `${(hechos / CLAVES.length) * 100}%`;
-    }
+    // ───────── Pantalla final: tu tarjeta ─────────
     function pintarExito() {
       const e = leer(LS_ENVIADO); if (!e) return;
       $('#nombreOk').textContent = e.nombre;
+      $('#lugar').textContent = e.lugar || '';
       $('#vista').textContent = e.texto;
-      $('#grupo').href = GRUPO_WHATSAPP;
-      $('#calGoogle').href = 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent('webcal://' + ICS);
+      const av = $('#avatar');
+      if (e.foto) { av.style.backgroundImage = `url(${e.foto})`; av.classList.add('con-foto'); } else { av.style.backgroundImage = ''; av.classList.remove('con-foto'); }
+      $('#calendario').href = 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent('webcal://' + ICS);
       $('#calApple').href = 'webcal://' + ICS;
+      $('#grupo').href = GRUPO_WHATSAPP;
+      // Portada final: otra foto, con el mensaje de gracias bien legible
+      $('#portadaImg').src = 'assets/foto-alegria.jpg';
+      $('#portadaImg').alt = 'Gracias por ser parte de la revolución';
+      $('#portadaMsg').hidden = false;
+      $('#tituloHero').textContent = `¡Bienvenida a la comunidad, ${e.nombre}! 💜`;
+      $('#textoHero').textContent = 'Ya eres parte del Club 365. Esta es tu tarjeta de presentación.';
       form.hidden = true; $('#progreso').hidden = true; $('#exito').hidden = false;
-      pintarChecks();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     // Copia la presentación (con alternativa para navegadores antiguos)
@@ -489,25 +465,14 @@
         t.remove(); return ok;
       }
     }
-    function avisoCopiado(ok) {
-      const a = $('#avisoCopiado'); a.hidden = false;
-      a.textContent = ok ? '✅ ¡Presentación copiada! En el grupo, pégala y envía.' : 'No pudimos copiarla sola: toca «Copiar de nuevo» y pégala en el grupo.';
-    }
-    // Al tocar el grupo: se copia sola la presentación y WhatsApp se abre en una pestaña nueva
+    // Un solo botón: copia tu presentación y abre el grupo en una pestaña nueva
     $('#grupo').addEventListener('click', async (ev) => {
       ev.preventDefault();
       const ok = await copiarPresentacion();
-      avisoCopiado(ok);
-      if (ok) marcar('grupo', true);
+      const a = $('#avisoCopiado'); a.hidden = false;
+      a.textContent = ok ? '✅ Tu presentación ya está copiada. En el grupo, pégala y envía.' : 'No pudimos copiarla sola. Selecciona el texto de tu tarjeta, cópialo y pégalo en el grupo.';
       const w = window.open(GRUPO_WHATSAPP, '_blank', 'noopener');
       if (!w) location.href = GRUPO_WHATSAPP;
-    });
-    $('#copiar').addEventListener('click', async () => { avisoCopiado(await copiarPresentacion()); });
-    $('#calGoogle').addEventListener('click', () => marcar('calendario', true));
-    $('#calApple').addEventListener('click', () => marcar('calendario', true));
-    // También se puede marcar o desmarcar a mano
-    document.querySelectorAll('#lista li[data-clave]:not([data-clave=perfil]) .check').forEach((b) => {
-      b.addEventListener('click', () => { const c = b.closest('li').dataset.clave; const e = leer(LS_ENVIADO) || { checks: {} }; marcar(c, !(e.checks && e.checks[c])); });
     });
     $('#otroPerfil').addEventListener('click', () => { borrar(LS_ENVIADO); borrar(LS_BORRADOR); location.href = location.pathname + '?nuevo=1'; });
 
