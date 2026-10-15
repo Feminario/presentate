@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calendario del Club 365 · Feminario</title>
+  <meta name="description" content="Las citas financieras del Club 365 de Feminario. Sincronízalas con tu calendario y se actualizan solas.">
+  <link rel="icon" href="../assets/isotipo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --azul:#7E84AE; --azul-fuerte:#5A6094; --lavanda:#C2CBFF; --lila:#CEA2DD; --lima:#DFF3AF; --crema:#FFEAD2; --rosa:#F9E1FF; --tinta:#2B2A47; --suave:#5E5C7A; --borde:#D9DCF2; }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin:0; font-family:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--tinta); line-height:1.5;
+      background: radial-gradient(60% 50% at 55% 0%, #E6DAFA 0%, transparent 70%) fixed, radial-gradient(50% 45% at 0% 20%, #F7DDF6 0%, transparent 70%) fixed, radial-gradient(45% 45% at 100% 92%, #EEDDF3 0%, transparent 70%) fixed, #FAF7FF; }
+    .contenedor { max-width: 640px; margin: 0 auto; padding: 28px 16px 56px; }
+    header { text-align: center; }
+    header img { width: 200px; max-width: 65%; height: auto; }
+    h1 { font-size: clamp(24px, 6vw, 32px); line-height: 1.15; margin: 18px 0 6px; font-weight: 800; color: var(--azul); }
+    header p { margin: 0 auto 18px; max-width: 480px; color: var(--suave); font-weight: 500; }
+    .tarjeta { background: rgba(255,255,255,.92); border: 1px solid var(--borde); border-radius: 24px; padding: 22px 20px; box-shadow: 0 12px 34px rgba(126,132,174,.16); margin-bottom: 16px; }
+    h2 { font-size: 19px; margin: 0 0 4px; font-weight: 800; color: var(--azul); }
+    .sub { margin: 0 0 14px; color: var(--suave); font-size: 14px; }
+    .boton { display: block; width: 100%; font: inherit; font-weight: 700; font-size: 16px; border: 0; border-radius: 14px; padding: 15px 18px; cursor: pointer; text-decoration: none; text-align: center; margin-top: 10px; }
+    .primario { background: var(--azul-fuerte); color: #fff; }
+    .primario:hover { background: #4a5082; }
+    .secundario { background: var(--rosa); color: var(--azul-fuerte); }
+    .secundario:hover { background: #f1cdfb; }
+    .aviso { background: var(--lima); color: #2F3B12; font-weight: 700; font-size: 13.5px; border-radius: 12px; padding: 10px 12px; text-align: center; margin-top: 10px; }
+    .nota { font-size: 12.5px; color: var(--suave); margin: 12px 2px 0; }
+    ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+    li { display: flex; gap: 14px; align-items: center; border: 1.5px solid var(--borde); border-radius: 16px; padding: 12px 14px; background: #fff; }
+    .fecha { flex: none; width: 58px; text-align: center; border-radius: 12px; background: var(--crema); padding: 6px 0; line-height: 1.1; }
+    .fecha b { display: block; font-size: 22px; font-weight: 800; color: var(--azul-fuerte); }
+    .fecha span { font-size: 11px; font-weight: 700; letter-spacing: .5px; color: var(--suave); text-transform: uppercase; }
+    .info { flex: 1; min-width: 0; }
+    .info strong { display: block; font-size: 15px; }
+    .info small { color: var(--suave); font-size: 12.5px; }
+    li a.solo { flex: none; font-size: 12.5px; font-weight: 700; color: var(--azul-fuerte); }
+    li.proxima { border-color: var(--azul); background: var(--rosa); }
+    footer { text-align: center; font-size: 12px; color: var(--suave); margin-top: 22px; }
+  </style>
+</head>
+<body>
+  <main class="contenedor">
+    <header>
+      <img src="../assets/logo-nombre.png" alt="Feminario">
+      <h1>Calendario del Club 365</h1>
+      <p>Las citas financieras con Andre y Tina. Sincroniza el calendario una vez y se actualiza solo.</p>
+    </header>
+
+    <section class="tarjeta">
+      <h2>Sincronizar con mi calendario</h2>
+      <p class="sub">Elige el que usas. Se agregan todos los eventos del año.</p>
+      <a class="boton primario" id="google" target="_blank" rel="noopener">Google Calendar</a>
+      <a class="boton secundario" id="apple">iPhone, Mac u Outlook</a>
+      <button type="button" class="boton secundario" id="copiar">Copiar enlace para otro calendario</button>
+      <div class="aviso" id="aviso" hidden></div>
+      <p class="nota">Si Google Calendar no se abre, en el computador entra a Google Calendar, ve a «Otros calendarios», pulsa «+», elige «Desde URL» y pega el enlace copiado. Google puede tardar unas horas en mostrar los eventos.</p>
+    </section>
+
+    <section class="tarjeta">
+      <h2>Próximas citas</h2>
+      <p class="sub">Último domingo de cada mes, en la mañana. La hora exacta y el enlace se confirman en el grupo de WhatsApp.</p>
+      <ul id="lista"></ul>
+    </section>
+
+    <footer>Feminario · Autonomía financiera por y para las mujeres</footer>
+  </main>
+
+  <script>
+    const ICS_HOST = 'feminario.github.io/presentate/calendario/club-365-2027.ics';
+    const $ = (s) => document.querySelector(s);
+    // Último domingo de cada mes de 2027 (mismas fechas del archivo .ics)
+    const CITAS = ['2027-01-31','2027-02-28','2027-03-28','2027-04-25','2027-05-30','2027-06-27','2027-07-25','2027-08-29','2027-09-26','2027-10-31','2027-11-28','2027-12-26'];
+    const MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+    $('#google').href = 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent('webcal://' + ICS_HOST);
+    $('#apple').href = 'webcal://' + ICS_HOST;
+
+    $('#copiar').addEventListener('click', async () => {
+      const url = 'https://' + ICS_HOST; let ok = false;
+      try { await navigator.clipboard.writeText(url); ok = true; }
+      catch (e) { const t = document.createElement('textarea'); t.value = url; document.body.appendChild(t); t.select(); try { ok = document.execCommand('copy'); } catch (x) {} t.remove(); }
+      const a = $('#aviso'); a.hidden = false;
+      a.textContent = ok ? 'Enlace copiado. Pégalo en tu calendario (Desde URL).' : url;
+    });
+
+    const hoy = new Date().toISOString().slice(0, 10);
+    const proxima = CITAS.find((d) => d >= hoy);
+    $('#lista').innerHTML = CITAS.map((d) => {
+      const [y, m, dia] = d.split('-').map(Number);
+      const fin = new Date(Date.UTC(y, m - 1, dia + 1)).toISOString().slice(0, 10).replace(/-/g, '');
+      const solo = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('Cita financiera · Club 365')
+        + '&dates=' + d.replace(/-/g, '') + '/' + fin + '&details=' + encodeURIComponent('Cita financiera virtual con Andre y Tina. La hora exacta y el enlace se confirman en el grupo de WhatsApp.');
+      return `<li class="${d === proxima ? 'proxima' : ''}"><div class="fecha"><b>${dia}</b><span>${MESES[m - 1]}</span></div>`
+        + `<div class="info"><strong>Cita financiera · Club 365</strong><small>Domingo, en la mañana${d === proxima ? ' · la próxima' : ''}</small></div>`
+        + `<a class="solo" href="${solo}" target="_blank" rel="noopener">Agregar</a></li>`;
+    }).join('');
+  </script>
+</body>
+</html>
