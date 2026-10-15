@@ -271,6 +271,7 @@
         <div class="acciones">
           <a class="boton primario grande" id="grupo" target="_blank" rel="noopener">💬 Enviar al grupo y presentarme</a>
           <div class="aviso" id="avisoCopiado" hidden></div>
+          <div class="link-suave">¿Ya estás en el grupo? <a id="waTexto" target="_blank" rel="noopener">Abre WhatsApp con tu presentación ya escrita</a></div>
         </div>
         <div class="carrusel" id="carrusel" aria-label="Fotos de la comunidad">
           <div class="pista" id="pista">
@@ -459,6 +460,7 @@
       const av = $('#avatar');
       if (e.foto) { av.style.backgroundImage = `url(${e.foto})`; av.classList.add('con-foto'); } else { av.style.backgroundImage = ''; av.classList.remove('con-foto'); }
       $('#grupo').href = GRUPO_WHATSAPP;
+      $('#waTexto').href = 'https://wa.me/?text=' + encodeURIComponent(e.texto);
       // Portada final: otra foto, con el mensaje de gracias bien legible
       $('#portadaImg').src = 'assets/foto-alegria.jpg';
       $('#portadaImg').alt = 'Gracias por ser parte de la revolución';
