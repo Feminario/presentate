@@ -1,0 +1,5 @@
+﻿-- Formulario «Preséntate» del Club 365 (YA APLICADO en Supabase; se guarda aquí como documentación)
+-- Tabla perfiles_club: cualquiera puede ENVIAR un perfil si aceptó; nadie puede leer, editar ni borrar desde la web.
+-- Bucket fotos-bienvenida: privado, máx. 1 MB, solo imágenes; la web solo puede subir.
+-- Vista tarjetas_bienvenida: texto de presentación para el equipo (sin edad, ingresos ni datos financieros).
+-- Ver el archivo completo en el proyecto femi-chat: supabase/migrations/20261015020000_perfiles_club_presentate.sql

@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preséntate · Club 365 · Feminario</title>
+  <meta name="description" content="Cuéntanos quién eres para conocerte y presentarte a la comunidad del Club 365.">
+  <link rel="icon" href="assets/isotipo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --azul: #7E84AE;  --azul-fuerte: #5A6094;  --lavanda: #C2CBFF;  --lila: #CEA2DD;
+      --lima: #DFF3AF;  --naranja: #F59356;      --crema: #FFEAD2;    --ambar: #F7C175;  --rosa: #F9E1FF;
+      --tinta: #2B2A47; --suave: #5E5C7A; --borde: #D9DCF2; --fondo: #FBFAFF; --error: #B3261E;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--tinta); line-height: 1.55;
+      /* Si existe assets/fondo.jpg se usa; si no, el degradado suave lila/rosa/blanco de la marca */
+      background:
+        url("assets/fondo.jpg") center / cover no-repeat fixed,
+        radial-gradient(60% 50% at 55% 0%, #E6DAFA 0%, transparent 70%) fixed,
+        radial-gradient(50% 45% at 0% 20%, #F7DDF6 0%, transparent 70%) fixed,
+        radial-gradient(45% 40% at 30% 88%, #E4E0FA 0%, transparent 70%) fixed,
+        radial-gradient(45% 45% at 100% 92%, #EEDDF3 0%, transparent 70%) fixed,
+        #FAF7FF;
+    }
+    .contenedor { max-width: 680px; margin: 0 auto; padding: 0 16px 56px; }
+    header.hero { background: transparent; padding: 28px 16px 0; text-align: center; }
+    header.hero img.logo { width: 220px; max-width: 70%; height: auto; }
+    header.hero h1 { font-size: clamp(26px, 6vw, 36px); line-height: 1.15; margin: 18px auto 8px; max-width: 560px; font-weight: 800; color: var(--azul); }
+    header.hero p { margin: 0 auto 18px; max-width: 520px; color: var(--suave); font-weight: 500; }
+    .foto-hero { display: block; width: 100%; max-width: 680px; margin: 0 auto; height: auto; border-radius: 20px 20px 0 0; }
+    .tarjeta { background: rgba(255,255,255,.9); backdrop-filter: blur(6px); border: 1px solid var(--borde); border-radius: 20px; padding: 22px 18px; margin-top: -1px; box-shadow: 0 10px 30px rgba(126,132,174,.15); }
+    .progreso { display: flex; gap: 8px; margin: 4px 0 18px; }
+    .progreso span { flex: 1; height: 6px; border-radius: 6px; background: var(--borde); transition: background .2s; }
+    .progreso span.activo { background: var(--azul); }
+    .paso { display: none; }
+    .paso.visible { display: block; animation: aparece .25s ease; }
+    @keyframes aparece { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    h2 { font-size: 24px; margin: 0 0 4px; font-weight: 800; color: var(--azul); }
+    .sub { margin: 0 0 18px; color: var(--suave); font-size: 14px; }
+    .privado { display: inline-block; background: var(--lima); color: #2F3B12; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 99px; margin-bottom: 10px; }
+    label { display: block; font-weight: 600; font-size: 14px; margin: 16px 0 6px; }
+    label .opc { font-weight: 500; color: var(--suave); }
+    input[type=text], input[type=email], select, textarea {
+      width: 100%; font: inherit; font-size: 16px; padding: 12px 14px; border: 1.5px solid var(--borde); border-radius: 12px; background: #fff; color: var(--tinta);
+    }
+    textarea { min-height: 92px; resize: vertical; }
+    input:focus, select:focus, textarea:focus { outline: 3px solid var(--lavanda); border-color: var(--azul); }
+    .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 520px) { .fila { grid-template-columns: 1fr; } }
+    .opciones { display: grid; gap: 8px; }
+    .opcion { display: flex; gap: 10px; align-items: flex-start; border: 1.5px solid var(--borde); border-radius: 12px; padding: 11px 12px; font-weight: 500; font-size: 14px; cursor: pointer; margin: 0; }
+    .opcion input { margin-top: 3px; accent-color: var(--azul-fuerte); }
+    .opcion:has(input:checked) { border-color: var(--azul); background: var(--rosa); }
+    .foto-caja { display: flex; gap: 14px; align-items: center; }
+    .foto-prev { width: 92px; height: 92px; border-radius: 50%; background: var(--rosa) center/cover no-repeat; border: 2px dashed var(--lila); flex: none; display: grid; place-items: center; font-size: 30px; }
+    .foto-prev.con-foto { border-style: solid; }
+    .ayuda { font-size: 12.5px; color: var(--suave); margin-top: 6px; }
+    .botones { display: flex; gap: 10px; margin-top: 24px; }
+    button, .boton { font: inherit; font-weight: 700; font-size: 16px; border: 0; border-radius: 14px; padding: 14px 20px; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; }
+    .primario { background: var(--azul-fuerte); color: #fff; flex: 1; }
+    .primario:hover { background: #4a5082; }
+    .secundario { background: var(--rosa); color: var(--azul-fuerte); }
+    .claro { background: var(--lima); color: #2F3B12; }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+    .consent { font-size: 13px; font-weight: 500; }
+    .error { color: var(--error); font-size: 14px; font-weight: 600; margin-top: 12px; display: none; }
+    .error.visible { display: block; }
+    .hp { position: absolute; left: -9999px; height: 0; overflow: hidden; }
+    .exito { text-align: center; }
+    .exito h2 { font-size: 26px; }
+    .vista { text-align: left; background: var(--crema); border-radius: 14px; padding: 14px 16px; white-space: pre-wrap; font-size: 14px; margin: 14px 0; }
+    .acciones { display: grid; gap: 10px; margin-top: 12px; }
+    .acciones .boton { width: 100%; }
+    footer { text-align: center; font-size: 12px; color: var(--suave); margin-top: 22px; }
+    footer img { width: 28px; height: 28px; vertical-align: middle; margin-right: 6px; }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <img class="logo" src="assets/logo-nombre.png" alt="Feminario">
+    <h1>¡Bienvenida al Club 365! Cuéntanos quién eres 💜</h1>
+    <p>Este formulario nos ayuda a conocerte y a presentarte a las demás mujeres de la comunidad. Toma menos de 5 minutos.</p>
+    <img class="foto-hero" src="assets/foto-fundadoras.jpg" alt="Andrea y Valentina, fundadoras de Feminario">
+  </header>
+
+  <main class="contenedor">
+    <div class="tarjeta" id="tarjeta">
+      <div class="progreso" aria-hidden="true"><span class="activo"></span><span></span><span></span></div>
+
+      <form id="form" novalidate autocomplete="on">
+        <div class="hp"><label>No llenar este campo <input type="text" name="web" tabindex="-1" autocomplete="off"></label></div>
+
+        <!-- PASO 1 -->
+        <section class="paso visible" data-paso="1">
+          <h2>Sobre ti</h2>
+          <p class="sub">Para saber con quién estamos hablando.</p>
+
+          <label for="nombre">Nombre completo</label>
+          <input id="nombre" name="nombre_completo" type="text" required maxlength="120" autocomplete="name">
+
+          <label for="llaman">¿Cómo te gusta que te llamen?</label>
+          <input id="llaman" name="como_te_llaman" type="text" required maxlength="60">
+
+          <label for="email">Correo con el que compraste</label>
+          <input id="email" name="email" type="email" required maxlength="200" autocomplete="email">
+
+          <div class="fila">
+            <div>
+              <label for="edad">Edad</label>
+              <select id="edad" name="edad_rango" required>
+                <option value="">Elige un rango</option>
+                <option>18 a 24</option><option>25 a 34</option><option>35 a 44</option><option>45 a 54</option><option>55 o más</option>
+              </select>
+            </div>
+            <div>
+              <label for="ciudad">Ciudad</label>
+              <input id="ciudad" name="ciudad" type="text" required maxlength="80" autocomplete="address-level2">
+            </div>
+          </div>
+
+          <label for="pais">País</label>
+          <input id="pais" name="pais" type="text" required maxlength="60" value="Colombia" autocomplete="country-name">
+
+          <label>Tu foto <span class="opc">(opcional, pero nos encanta ponerle cara a la comunidad)</span></label>
+          <div class="foto-caja">
+            <div class="foto-prev" id="fotoPrev">📷</div>
+            <div>
+              <input id="foto" type="file" accept="image/*" style="font-size:14px;max-width:210px">
+              <div class="ayuda">Se reduce automáticamente (no importa el peso original).</div>
+            </div>
+          </div>
+
+          <div class="botones"><button type="button" class="primario" data-siguiente>Siguiente</button></div>
+        </section>
+
+        <!-- PASO 2 -->
+        <section class="paso" data-paso="2">
+          <span class="privado">🔒 Solo lo ve el equipo de Feminario</span>
+          <h2>Tu punto de partida</h2>
+          <p class="sub">Con esto podemos acompañarte mejor. No se comparte con el grupo.</p>
+
+          <label>¿Dónde estás hoy con tus finanzas?</label>
+          <div class="opciones">
+            <label class="opcion"><input type="radio" name="punto_partida" value="Estoy empezando a ordenar mis finanzas" required> Estoy empezando a ordenar mis finanzas</label>
+            <label class="opcion"><input type="radio" name="punto_partida" value="Ya ahorro y quiero aprender a invertir"> Ya ahorro y quiero aprender a invertir</label>
+            <label class="opcion"><input type="radio" name="punto_partida" value="Ya invierto y quiero crecer mi portafolio"> Ya invierto y quiero crecer mi portafolio</label>
+          </div>
+
+          <label>Hoy... <span class="opc">(puedes marcar varias)</span></label>
+          <div class="opciones">
+            <label class="opcion"><input type="checkbox" name="situacion" value="Tengo deudas"> Tengo deudas</label>
+            <label class="opcion"><input type="checkbox" name="situacion" value="Tengo ahorros"> Tengo ahorros</label>
+            <label class="opcion"><input type="checkbox" name="situacion" value="Invierto actualmente"> Invierto actualmente</label>
+          </div>
+
+          <label for="meta">¿Qué meta financiera quieres lograr en 2027?</label>
+          <textarea id="meta" name="meta_2027" maxlength="400" required></textarea>
+
+          <div class="fila">
+            <div>
+              <label for="ingreso">¿Cuánto ganas al mes?</label>
+              <select id="ingreso" name="ingreso_rango" required>
+                <option value="">Elige un rango</option>
+                <option>Menos de $2 millones</option><option>$2 a $4 millones</option><option>$4 a $6 millones</option>
+                <option>$6 a $10 millones</option><option>Más de $10 millones</option><option>Prefiero no decir</option>
+              </select>
+            </div>
+            <div>
+              <label for="modalidad">¿Cómo trabajas?</label>
+              <select id="modalidad" name="modalidad_trabajo" required>
+                <option value="">Elige una opción</option>
+                <option>Empleada</option><option>Independiente</option><option>Emprendedora con negocio</option>
+                <option>Estudiante</option><option>Otra</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="botones">
+            <button type="button" class="secundario" data-atras>Atrás</button>
+            <button type="button" class="primario" data-siguiente>Siguiente</button>
+          </div>
+        </section>
+
+        <!-- PASO 3 -->
+        <section class="paso" data-paso="3">
+          <h2>Para presentarte a la comunidad</h2>
+          <p class="sub">Esto sí lo compartimos en el grupo de WhatsApp, para que las demás te conozcan.</p>
+
+          <label for="ocupacion">¿A qué te dedicas?</label>
+          <input id="ocupacion" name="ocupacion" type="text" required maxlength="120">
+
+          <label for="hobbies">Tus hobbies</label>
+          <input id="hobbies" name="hobbies" type="text" required maxlength="300" placeholder="Ej: bailar, leer, hacer ceramica">
+
+          <label for="curioso">Un dato curioso sobre ti</label>
+          <input id="curioso" name="dato_curioso" type="text" required maxlength="300">
+
+          <label for="razon">¿Por qué entraste a Feminario?</label>
+          <textarea id="razon" name="razon" maxlength="600" required></textarea>
+
+          <label class="opcion consent"><input type="checkbox" id="aceptaDatos" required>
+            <span>Autorizo a Feminario a tratar mis datos personales para acompañarme en el Club 365, según su política de privacidad (Ley 1581 de 2012).</span></label>
+          <label class="opcion consent" style="margin-top:8px"><input type="checkbox" id="aceptaCompartir" required>
+            <span>Autorizo que mi nombre, ciudad, ocupación, hobbies, dato curioso, motivo y foto se compartan en el grupo de WhatsApp de la comunidad. Mi edad, ingresos y datos financieros nunca se comparten.</span></label>
+
+          <p class="error" id="error" role="alert"></p>
+          <div class="botones">
+            <button type="button" class="secundario" data-atras>Atrás</button>
+            <button type="submit" class="primario" id="enviar">Enviar y unirme 💜</button>
+          </div>
+        </section>
+      </form>
+
+      <!-- ÉXITO -->
+      <section class="exito" id="exito" hidden>
+        <h2>¡Listo, <span id="nombreOk"></span>! 🎉</h2>
+        <p>Ya eres parte del Club. Este es tu mensaje de presentación: cópialo, únete al grupo de WhatsApp y pégalo allá (si quieres, adjunta tu foto).</p>
+        <div class="vista" id="vista"></div>
+        <div class="acciones">
+          <button type="button" class="claro" id="copiar">📋 Copiar mi presentación</button>
+          <a class="boton primario" id="grupo" target="_blank" rel="noopener">💬 Unirme a la comunidad de WhatsApp</a>
+          <a class="boton secundario" id="calendario" href="#">📅 Agregar los eventos del Club a mi calendario</a>
+        </div>
+      </section>
+    </div>
+
+    <footer><img src="assets/isotipo.png" alt="">Feminario · Autonomía financiera por y para las mujeres</footer>
+  </main>
+
+  <script>
+    // ───────── Configuración (la llave es PÚBLICA por diseño: solo permite enviar el formulario, no leer nada) ─────────
+    const SUPABASE_URL = 'https://jiuxidktzoejkndkvucp.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_oJuckq5V6SNUmkvrhEvDFA_WC_7KkXD';
+    const GRUPO_WHATSAPP = 'https://chat.whatsapp.com/BqgSbJzpvBp0CBbuAealMs';
+    const ICS = 'feminario.github.io/presentate/calendario/club-365-2027.ics';
+    const FOTO_MAX_PX = 800;      // lado mayor de la foto
+    const FOTO_CALIDAD = 0.82;    // calidad JPEG
+
+    const $ = (s) => document.querySelector(s);
+    const form = $('#form');
+    const pasos = [...document.querySelectorAll('.paso')];
+    const barras = [...document.querySelectorAll('.progreso span')];
+    let paso = 1;
+    let fotoBlob = null;
+
+    // Datos que vienen del correo (?email=...&nombre=...)
+    const q = new URLSearchParams(location.search);
+    if (q.get('email')) $('#email').value = q.get('email');
+    if (q.get('nombre')) { $('#llaman').value = q.get('nombre'); }
+
+    function ir(n) {
+      paso = n;
+      pasos.forEach((p) => p.classList.toggle('visible', Number(p.dataset.paso) === n));
+      barras.forEach((b, i) => b.classList.toggle('activo', i < n));
+      window.scrollTo({ top: $('#tarjeta').offsetTop - 12, behavior: 'smooth' });
+    }
+    function valido(n) {
+      const seccion = pasos[n - 1];
+      const campos = [...seccion.querySelectorAll('input, select, textarea')];
+      for (const c of campos) { if (!c.checkValidity()) { c.reportValidity(); return false; } }
+      return true;
+    }
+    document.querySelectorAll('[data-siguiente]').forEach((b) => b.addEventListener('click', () => { if (valido(paso)) ir(paso + 1); }));
+    document.querySelectorAll('[data-atras]').forEach((b) => b.addEventListener('click', () => ir(paso - 1)));
+
+    // Foto: se reduce en el navegador antes de subirla (≈100–250 KB)
+    $('#foto').addEventListener('change', async (e) => {
+      const archivo = e.target.files[0];
+      if (!archivo) { fotoBlob = null; $('#fotoPrev').style.backgroundImage = ''; $('#fotoPrev').textContent = '📷'; $('#fotoPrev').classList.remove('con-foto'); return; }
+      try {
+        fotoBlob = await reducir(archivo);
+        const url = URL.createObjectURL(fotoBlob);
+        $('#fotoPrev').style.backgroundImage = `url(${url})`;
+        $('#fotoPrev').textContent = '';
+        $('#fotoPrev').classList.add('con-foto');
+      } catch (err) { fotoBlob = null; alert('No pudimos leer esa foto. Prueba con otra, por favor.'); }
+    });
+    function reducir(archivo) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const escala = Math.min(1, FOTO_MAX_PX / Math.max(img.width, img.height));
+          const c = document.createElement('canvas');
+          c.width = Math.round(img.width * escala); c.height = Math.round(img.height * escala);
+          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+          const probar = (calidad) => c.toBlob((b) => {
+            if (!b) return reject(new Error('sin blob'));
+            if (b.size > 900 * 1024 && calidad > 0.4) return probar(calidad - 0.15);
+            resolve(b);
+          }, 'image/jpeg', calidad);
+          probar(FOTO_CALIDAD);
+        };
+        img.onerror = reject;
+        img.src = URL.createObjectURL(archivo);
+      });
+    }
+
+    function mostrarError(msg) { const e = $('#error'); e.textContent = msg; e.classList.add('visible'); }
+
+    form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      $('#error').classList.remove('visible');
+      if (!valido(3)) return;
+      if (form.web.value) { return mostrarExito(datos()); }       // trampa anti-spam
+      const boton = $('#enviar'); boton.disabled = true; boton.textContent = 'Enviando…';
+      try {
+        const d = datos();
+        let foto_path = null;
+        if (fotoBlob) {
+          foto_path = `${(crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36).slice(2))}.jpg`;
+          const subida = await fetch(`${SUPABASE_URL}/storage/v1/object/fotos-bienvenida/${foto_path}`, {
+            method: 'POST', headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'image/jpeg' }, body: fotoBlob,
+          });
+          if (!subida.ok) foto_path = null;       // si falla la foto, se envía el resto igual
+        }
+        const r = await fetch(`${SUPABASE_URL}/rest/v1/perfiles_club`, {
+          method: 'POST',
+          headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+          body: JSON.stringify({ ...d.fila, foto_path }),
+        });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        mostrarExito(d);
+      } catch (err) {
+        boton.disabled = false; boton.textContent = 'Enviar y unirme 💜';
+        mostrarError('Algo salió mal al enviar. Revisa tu conexión e inténtalo de nuevo, por favor.');
+      }
+    });
+
+    function datos() {
+      const v = (n) => (form.elements[n] ? form.elements[n].value.trim() : '');
+      const situacion = [...form.querySelectorAll('input[name=situacion]:checked')].map((c) => c.value);
+      const fila = {
+        email: v('email').toLowerCase(), nombre_completo: v('nombre_completo'), como_te_llaman: v('como_te_llaman'), edad_rango: v('edad_rango'),
+        ciudad: v('ciudad'), pais: v('pais'), punto_partida: (form.querySelector('input[name=punto_partida]:checked') || {}).value || '',
+        situacion, meta_2027: v('meta_2027'), ingreso_rango: v('ingreso_rango'), modalidad_trabajo: v('modalidad_trabajo'),
+        ocupacion: v('ocupacion'), hobbies: v('hobbies'), dato_curioso: v('dato_curioso'), razon: v('razon'),
+        acepta_datos: $('#aceptaDatos').checked, acepta_compartir: $('#aceptaCompartir').checked,
+      };
+      return { fila };
+    }
+
+    function mostrarExito({ fila }) {
+      const nombre = fila.como_te_llaman || fila.nombre_completo;
+      const donde = [fila.ciudad, fila.pais].filter(Boolean).join(', ');
+      const texto = `¡Hola, comunidad! 💜 Soy ${nombre}${donde ? ' de ' + donde : ''}.\n💼 ${fila.ocupacion}\n🎨 Hobbies: ${fila.hobbies}\n✨ Dato curioso: ${fila.dato_curioso}\n🌸 Entré a Feminario porque: ${fila.razon}`;
+      $('#nombreOk').textContent = nombre;
+      $('#vista').textContent = texto;
+      $('#grupo').href = GRUPO_WHATSAPP;
+      $('#calendario').href = 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent('webcal://' + ICS);
+      $('#copiar').onclick = async () => {
+        try { await navigator.clipboard.writeText(texto); $('#copiar').textContent = '✅ ¡Copiado!'; }
+        catch { const r = document.createRange(); r.selectNodeContents($('#vista')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); $('#copiar').textContent = 'Selecciona y copia el texto ☝️'; }
+      };
+      form.hidden = true; document.querySelector('.progreso').hidden = true; $('#exito').hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
