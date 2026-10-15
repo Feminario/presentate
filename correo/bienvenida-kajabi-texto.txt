@@ -1,4 +1,4 @@
-¡Bienvenida al Club 365, {{ customer.first_name }}!
+¡Bienvenida al Club 365, {{ member.first_name }}!
 
 Qué alegría tenerte. Desde hoy haces parte de una comunidad de mujeres que quieren lo mismo que tú: autonomía financiera, aprender a invertir y construir su portafolio, acompañadas.
 
@@ -6,7 +6,7 @@ Para empezar, solo te pedimos 3 pasos:
 
 PASO 1 · Cuéntanos quién eres
 Llena tu perfil (menos de 5 minutos) y sube tu foto. Así te presentamos a la comunidad.
-<a href="https://feminario.github.io/presentate/?email={{ customer.email }}&nombre={{ customer.first_name }}">Completar mi perfil</a>
+<a href="https://feminario.github.io/presentate/?nombre={{ member.first_name }}">Completar mi perfil</a>
 
 PASO 2 · Únete a la comunidad de WhatsApp
 Ahí nos encontramos, resolvemos dudas y nos acompañamos todo el año. Cuando termines tu perfil, comparte tu presentación en el grupo.
