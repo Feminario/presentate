@@ -269,8 +269,6 @@
           <div class="vista" id="vista"></div>
         </div>
         <div class="acciones">
-          <a class="boton secundario grande" id="calendario" target="_blank" rel="noopener">📅 Sincronizar los eventos del Club</a>
-          <div class="link-suave">¿iPhone, Mac u Outlook? <a id="calApple" target="_blank" rel="noopener">Suscríbete aquí</a></div>
           <a class="boton primario grande" id="grupo" target="_blank" rel="noopener">💬 Enviar al grupo y presentarme</a>
           <div class="aviso" id="avisoCopiado" hidden></div>
         </div>
@@ -295,7 +293,6 @@
     const SUPABASE_URL = 'https://jiuxidktzoejkndkvucp.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_oJuckq5V6SNUmkvrhEvDFA_WC_7KkXD';
     const GRUPO_WHATSAPP = 'https://chat.whatsapp.com/BqgSbJzpvBp0CBbuAealMs';
-    const ICS = 'feminario.github.io/presentate/calendario/club-365-2027.ics';
     const FOTO_MAX_PX = 800;      // lado mayor de la foto
     const FOTO_CALIDAD = 0.82;    // calidad JPEG
     const LS_BORRADOR = 'club365_borrador';
@@ -461,8 +458,6 @@
       $('#vista').textContent = e.texto;
       const av = $('#avatar');
       if (e.foto) { av.style.backgroundImage = `url(${e.foto})`; av.classList.add('con-foto'); } else { av.style.backgroundImage = ''; av.classList.remove('con-foto'); }
-      $('#calendario').href = 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent('webcal://' + ICS);
-      $('#calApple').href = 'webcal://' + ICS;
       $('#grupo').href = GRUPO_WHATSAPP;
       // Portada final: otra foto, con el mensaje de gracias bien legible
       $('#portadaImg').src = 'assets/foto-alegria.jpg';
