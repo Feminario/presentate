@@ -16,6 +16,7 @@
       --tinta: #2B2A47; --suave: #5E5C7A; --borde: #D9DCF2; --error: #B3261E; --ok: #3F7D2E;
     }
     * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0; font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--tinta); line-height: 1.55;
@@ -64,11 +65,11 @@
 
     /* Subir foto */
     .foto-zona { display: flex; gap: 18px; align-items: center; padding: 16px; border: 2px dashed var(--lila); border-radius: 18px; background: linear-gradient(135deg, #fff 0%, var(--rosa) 100%); }
-    .foto-prev { width: 112px; height: 112px; border-radius: 50%; flex: none; display: grid; place-items: center; font-size: 36px; background: #fff center / cover no-repeat; border: 4px solid #fff; box-shadow: 0 0 0 3px var(--lila), 0 8px 20px rgba(126,132,174,.28); color: var(--lila); }
+    .foto-prev { width: 112px; height: 112px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; line-height: 1; font-size: 34px; background: #fff center / cover no-repeat; border: 4px solid #fff; box-shadow: 0 0 0 3px var(--lila), 0 8px 20px rgba(126,132,174,.28); color: var(--lila); }
     .foto-prev.con-foto { box-shadow: 0 0 0 3px var(--azul), 0 8px 20px rgba(126,132,174,.35); }
     .foto-acciones { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; min-width: 0; }
-    .boton-foto { display: inline-flex; align-items: center; gap: 8px; margin: 0; background: var(--azul-fuerte); color: #fff; font-weight: 700; font-size: 15px; padding: 12px 20px; border-radius: 99px; cursor: pointer; box-shadow: 0 6px 14px rgba(90,96,148,.3); transition: transform .12s, background .12s; }
-    .boton-foto:hover { background: #4a5082; transform: translateY(-1px); }
+    .boton-foto { display: inline-block; margin: 0; background: #fff; color: var(--azul-fuerte); font-weight: 600; font-size: 14px; padding: 8px 18px; border-radius: 99px; border: 1.5px solid var(--lila); cursor: pointer; transition: background .12s, border-color .12s; }
+    .boton-foto:hover { background: var(--rosa); border-color: var(--azul); }
     .quitar { background: none; border: 0; color: var(--azul-fuerte); font-weight: 600; font-size: 13px; text-decoration: underline; cursor: pointer; padding: 2px 0; }
     .ayuda { font-size: 12.5px; color: var(--suave); }
     @media (max-width: 420px) { .foto-zona { flex-direction: column; text-align: center; } .foto-acciones { align-items: center; } }
@@ -102,6 +103,8 @@
     .lista .boton, .lista button.accion { padding: 11px 16px; font-size: 14.5px; border-radius: 12px; margin: 0 8px 6px 0; }
     .vista { text-align: left; background: var(--crema); border-radius: 14px; padding: 12px 14px; white-space: pre-wrap; font-size: 13.5px; margin: 6px 0 10px; }
     .aviso { background: var(--lima); color: #2F3B12; font-weight: 700; font-size: 13.5px; border-radius: 12px; padding: 10px 12px; margin-top: 8px; }
+    .gracias { margin: 22px 0 4px; padding: 18px 18px; border-radius: 18px; background: linear-gradient(135deg, var(--rosa), var(--lavanda)); color: var(--tinta); font-weight: 600; font-size: 15px; text-align: center; line-height: 1.55; }
+    .gracias strong { color: var(--azul-fuerte); }
     .nuevo { display: block; text-align: center; margin-top: 18px; font-size: 13px; color: var(--suave); }
     .nuevo a { color: var(--azul-fuerte); font-weight: 600; cursor: pointer; }
     footer { text-align: center; font-size: 12px; color: var(--suave); margin-top: 22px; }
@@ -160,7 +163,7 @@
             <div class="foto-prev" id="fotoPrev" aria-hidden="true">📷</div>
             <div class="foto-acciones">
               <input id="foto" type="file" accept="image/*" hidden>
-              <label for="foto" class="boton-foto" id="botonFoto">📷 Subir mi foto</label>
+              <label for="foto" class="boton-foto" id="botonFoto">Subir foto</label>
               <button type="button" class="quitar" id="quitarFoto" hidden>Quitar foto</button>
               <span class="ayuda" id="ayudaFoto">JPG o PNG. La reducimos automáticamente.</span>
             </div>
@@ -274,6 +277,7 @@
               <a class="boton secundario" id="calApple" target="_blank" rel="noopener">🍎 iPhone, Mac u Outlook</a></div>
           </li>
         </ol>
+        <p class="gracias">💜 Gracias por ser parte de la <strong>revolución</strong> que está por y para la <strong>autonomía económica de las mujeres</strong>.<br>Esto es solo el inicio.</p>
         <p class="nuevo">¿No eres tú? <a id="otroPerfil">Llenar otro perfil</a></p>
       </section>
     </div>
@@ -356,10 +360,10 @@
       const prev = $('#fotoPrev');
       if (fotoDataUrl) {
         prev.style.backgroundImage = `url(${fotoDataUrl})`; prev.textContent = ''; prev.classList.add('con-foto');
-        $('#botonFoto').textContent = '🔄 Cambiar foto'; $('#quitarFoto').hidden = false; $('#ayudaFoto').textContent = '¡Qué linda! Así te verán en el grupo.';
+        $('#botonFoto').textContent = 'Cambiar foto'; $('#quitarFoto').hidden = false; $('#ayudaFoto').textContent = '¡Qué linda! Así te verán en el grupo.';
       } else {
         prev.style.backgroundImage = ''; prev.textContent = '📷'; prev.classList.remove('con-foto');
-        $('#botonFoto').textContent = '📷 Subir mi foto'; $('#quitarFoto').hidden = true; $('#ayudaFoto').textContent = 'JPG o PNG. La reducimos automáticamente.';
+        $('#botonFoto').textContent = 'Subir foto'; $('#quitarFoto').hidden = true; $('#ayudaFoto').textContent = 'JPG o PNG. La reducimos automáticamente.';
       }
     }
     function blobADataUrl(blob) { return new Promise((res) => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(blob); }); }
