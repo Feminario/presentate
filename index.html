@@ -271,6 +271,8 @@
         <div class="acciones">
           <a class="boton primario grande" id="grupo" target="_blank" rel="noopener">💬 Enviar al grupo y presentarme</a>
           <div class="aviso" id="avisoCopiado" hidden></div>
+          <a class="boton secundario grande" id="descargarFoto" download="mi-foto-feminario.jpg" hidden>⬇️ Guardar mi foto para adjuntarla</a>
+          <div class="link-suave" id="pistaFoto" hidden>En WhatsApp pulsa el clip (adjuntar), elige tu foto y pega tu presentación como texto.</div>
           <button type="button" class="boton secundario grande" id="compartir" hidden>📲 Compartir con mi foto (celular)</button>
           <div class="link-suave">¿Ya estás en el grupo? <a id="waTexto" target="_blank" rel="noopener">Abre WhatsApp con tu presentación ya escrita</a></div>
         </div>
@@ -445,7 +447,8 @@
     });
     function terminar(fila) {
       const nombre = fila.como_te_llaman || fila.nombre_completo;
-      const donde = [fila.ciudad, fila.pais].filter(Boolean).join(', ');
+      const ciudad = (fila.ciudad || '').trim(), pais = (fila.pais || '').trim();
+      const donde = (pais && ciudad.toLowerCase().includes(pais.toLowerCase())) ? ciudad : [ciudad, pais].filter(Boolean).join(', ');
       const texto = `¡Hola, comunidad! Soy ${nombre}${donde ? ' de ' + donde : ''}.\n💼 ${fila.ocupacion}\n🎨 Hobbies: ${fila.hobbies}\n✨ Dato curioso: ${fila.dato_curioso}\n🌸 Entré a Feminario porque: ${fila.razon}`;
       guardar(LS_ENVIADO, { nombre, texto, lugar: donde, foto: fotoDataUrl });
       borrar(LS_BORRADOR);
@@ -461,6 +464,7 @@
       const av = $('#avatar');
       if (e.foto) { av.style.backgroundImage = `url(${e.foto})`; av.classList.add('con-foto'); } else { av.style.backgroundImage = ''; av.classList.remove('con-foto'); }
       $('#grupo').href = GRUPO_WHATSAPP;
+      if (e.foto) { $('#descargarFoto').href = e.foto; $('#descargarFoto').hidden = false; $('#pistaFoto').hidden = false; }
       $('#waTexto').href = 'https://wa.me/?text=' + encodeURIComponent(e.texto);
       // Portada final: otra foto, con el mensaje de gracias bien legible
       $('#portadaImg').src = 'assets/foto-alegria.jpg';
