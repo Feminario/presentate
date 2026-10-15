@@ -271,6 +271,7 @@
         <div class="acciones">
           <a class="boton primario grande" id="grupo" target="_blank" rel="noopener">💬 Enviar al grupo y presentarme</a>
           <div class="aviso" id="avisoCopiado" hidden></div>
+          <button type="button" class="boton secundario grande" id="compartir" hidden>📲 Compartir con mi foto (celular)</button>
           <div class="link-suave">¿Ya estás en el grupo? <a id="waTexto" target="_blank" rel="noopener">Abre WhatsApp con tu presentación ya escrita</a></div>
         </div>
         <div class="carrusel" id="carrusel" aria-label="Fotos de la comunidad">
@@ -523,6 +524,22 @@
         if (Date.now() < fin && ps.some((p) => p.y < H + 20)) requestAnimationFrame(paso); else cv.remove();
       })();
     }
+    // Compartir foto + texto con el menú del celular (el usuario elige WhatsApp y el grupo)
+    async function archivoFoto() {
+      const e = leer(LS_ENVIADO); if (!e || !e.foto) return null;
+      const b = await (await fetch(e.foto)).blob();
+      return new File([b], 'mi-foto.jpg', { type: b.type || 'image/jpeg' });
+    }
+    (async () => {
+      try {
+        const f = await archivoFoto(); const e = leer(LS_ENVIADO);
+        if (f && e && navigator.canShare && navigator.canShare({ files: [f], text: e.texto })) $('#compartir').hidden = false;
+      } catch (x) {}
+    })();
+    $('#compartir').addEventListener('click', async () => {
+      try { const f = await archivoFoto(); await navigator.share({ files: [f], text: leer(LS_ENVIADO).texto }); }
+      catch (x) { /* cancelado o no disponible */ }
+    });
     $('#otroPerfil').addEventListener('click', () => { borrar(LS_ENVIADO); borrar('club365_hecho'); borrar(LS_BORRADOR); location.href = location.pathname + '?nuevo=1'; });
 
     // ───────── Arranque ─────────
