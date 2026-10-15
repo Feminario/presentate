@@ -106,6 +106,12 @@
     .aviso { background: var(--lima); color: #2F3B12; font-weight: 700; font-size: 13.5px; border-radius: 12px; padding: 10px 12px; text-align: center; }
     .nuevo { display: block; text-align: center; margin-top: 20px; font-size: 13px; color: var(--suave); }
     .nuevo a { color: var(--azul-fuerte); font-weight: 600; cursor: pointer; }
+    /* Tarjeta de presentación (imagen) */
+    .tarjeta-wrap { position: relative; }
+    .tarjeta-img { display: block; width: 100%; height: auto; min-height: 220px; border-radius: 18px; background: var(--rosa); box-shadow: 0 10px 28px rgba(126,132,174,.25); }
+    .icono-copiar { position: absolute; top: 12px; right: 12px; width: 42px; height: 42px; padding: 0; border-radius: 50%; background: rgba(255,255,255,.95); color: var(--azul-fuerte); box-shadow: 0 2px 10px rgba(43,42,71,.25); display: flex; align-items: center; justify-content: center; }
+    .icono-copiar:hover { background: var(--rosa); }
+    .icono-copiar.listo { background: var(--lima); color: #2F3B12; }
     /* Carrusel */
     .carrusel { position: relative; margin: 22px 0 0; border-radius: 20px; overflow: hidden; background: var(--rosa); aspect-ratio: 16 / 10; box-shadow: 0 8px 24px rgba(126,132,174,.22); }
     .carrusel .pista { display: flex; height: 100%; transition: transform .5s ease; }
@@ -262,19 +268,15 @@
 
       <!-- ÉXITO: tarjeta de perfil -->
       <section class="exito" id="exito" hidden>
-        <div class="perfil">
-          <div class="avatar" id="avatar" role="img" aria-label="Tu foto"></div>
-          <h2><span id="nombreOk"></span></h2>
-          <p class="lugar" id="lugar"></p>
-          <div class="vista" id="vista"></div>
+        <div class="tarjeta-wrap">
+          <img class="tarjeta-img" id="tarjetaImg" alt="Tu tarjeta de presentación">
+          <button type="button" class="icono-copiar" id="copiarTarjeta" aria-label="Copiar tarjeta" title="Copiar tarjeta">
+            <svg id="iconoCopiar" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
+          </button>
         </div>
         <div class="acciones">
-          <a class="boton primario grande" id="grupo" target="_blank" rel="noopener">💬 Enviar al grupo y presentarme</a>
+          <a class="boton primario grande" id="grupo" target="_blank" rel="noopener">Pegarla en el chat del grupo</a>
           <div class="aviso" id="avisoCopiado" hidden></div>
-          <a class="boton secundario grande" id="descargarFoto" download="mi-foto-feminario.jpg" hidden>⬇️ Guardar mi foto para adjuntarla</a>
-          <div class="link-suave" id="pistaFoto" hidden>En WhatsApp pulsa el clip (adjuntar), elige tu foto y pega tu presentación como texto.</div>
-          <button type="button" class="boton secundario grande" id="compartir" hidden>📲 Compartir con mi foto (celular)</button>
-          <div class="link-suave">¿Ya estás en el grupo? <a id="waTexto" target="_blank" rel="noopener">Abre WhatsApp con tu presentación ya escrita</a></div>
         </div>
         <div class="carrusel" id="carrusel" aria-label="Fotos de la comunidad">
           <div class="pista" id="pista">
@@ -450,7 +452,7 @@
       const ciudad = (fila.ciudad || '').trim(), pais = (fila.pais || '').trim();
       const donde = (pais && ciudad.toLowerCase().includes(pais.toLowerCase())) ? ciudad : [ciudad, pais].filter(Boolean).join(', ');
       const texto = `¡Hola, comunidad! Soy ${nombre}${donde ? ' de ' + donde : ''}.\n💼 ${fila.ocupacion}\n🎨 Hobbies: ${fila.hobbies}\n✨ Dato curioso: ${fila.dato_curioso}\n🌸 Entré a Feminario porque: ${fila.razon}`;
-      guardar(LS_ENVIADO, { nombre, texto, lugar: donde, foto: fotoDataUrl });
+      guardar(LS_ENVIADO, { nombre, texto, lugar: donde, foto: fotoDataUrl, ocupacion: fila.ocupacion, hobbies: fila.hobbies, curioso: fila.dato_curioso, razon: fila.razon });
       borrar(LS_BORRADOR);
       pintarExito();
     }
@@ -458,14 +460,8 @@
     // ───────── Pantalla final: tu tarjeta ─────────
     function pintarExito() {
       const e = leer(LS_ENVIADO); if (!e) return;
-      $('#nombreOk').textContent = e.nombre;
-      $('#lugar').textContent = e.lugar || '';
-      $('#vista').textContent = e.texto;
-      const av = $('#avatar');
-      if (e.foto) { av.style.backgroundImage = `url(${e.foto})`; av.classList.add('con-foto'); } else { av.style.backgroundImage = ''; av.classList.remove('con-foto'); }
       $('#grupo').href = GRUPO_WHATSAPP;
-      if (e.foto) { $('#descargarFoto').href = e.foto; $('#descargarFoto').hidden = false; $('#pistaFoto').hidden = false; }
-      $('#waTexto').href = 'https://wa.me/?text=' + encodeURIComponent(e.texto);
+      dibujarTarjeta(e);
       // Portada final: otra foto, con el mensaje de gracias bien legible
       $('#portadaImg').src = 'assets/foto-alegria.jpg';
       $('#portadaImg').alt = 'Gracias por ser parte de la revolución';
@@ -477,26 +473,91 @@
       if (!sessionStorage.getItem('club365_confeti')) { try { sessionStorage.setItem('club365_confeti', '1'); } catch (x) {} confeti(); }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    // Copia la presentación (con alternativa para navegadores antiguos)
-    async function copiarPresentacion() {
-      const e = leer(LS_ENVIADO); if (!e) return false;
-      // Se copia primero de forma inmediata (dentro del clic) y además con la API moderna
-      const t = document.createElement('textarea'); t.value = e.texto; t.style.position = 'fixed'; t.style.opacity = '0';
-      document.body.appendChild(t); t.select();
-      let ok = false; try { ok = document.execCommand('copy'); } catch (x) {}
-      t.remove();
-      try { await navigator.clipboard.writeText(e.texto); ok = true; } catch (err) {}
-      return ok;
+    // ───────── Tarjeta de presentación: se dibuja como imagen (foto, nombre y texto) ─────────
+    let tarjetaLista = null;     // promesa con el PNG de la tarjeta
+    function dibujarTarjeta(e) {
+      tarjetaLista = (async () => {
+        try { await Promise.all([document.fonts.load('800 40px Montserrat'), document.fonts.load('600 30px Montserrat'), document.fonts.load('700 24px Montserrat')]); } catch (x) {}
+        const cargar = (src) => new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+        const foto = await cargar(e.foto || 'assets/isotipo.png');
+        const FONT = '"Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif';
+        const W = 1080, M = 28, PAD = 56, X = M + PAD, AN = W - 2 * X;
+        const recorta = (t) => { t = String(t || '').trim(); return t.length > 200 ? t.slice(0, 197).trimEnd() + '…' : t; };
+        const secciones = e.ocupacion
+          ? [['A QUÉ ME DEDICO', e.ocupacion], ['MIS HOBBIES', e.hobbies], ['DATO CURIOSO', e.curioso], ['POR QUÉ ENTRÉ A FEMINARIO', e.razon]].map(([t, v]) => [t, recorta(v)])
+          : [['SOBRE MÍ', recorta(e.texto)]];
+        const medir = document.createElement('canvas').getContext('2d');
+        const lineas = (ctx, texto, ancho) => {
+          const out = [];
+          for (const parrafo of String(texto).split('\n')) {
+            let linea = '';
+            for (const palabra of parrafo.split(/\s+/).filter(Boolean)) {
+              const prueba = linea ? linea + ' ' + palabra : palabra;
+              if (ctx.measureText(prueba).width > ancho && linea) { out.push(linea); linea = palabra; } else linea = prueba;
+            }
+            out.push(linea);
+          }
+          return out;
+        };
+        // Nombre: se achica si es muy largo
+        let tam = 66; medir.font = '800 ' + tam + 'px ' + FONT;
+        while (tam > 36 && medir.measureText(e.nombre).width > AN) { tam -= 2; medir.font = '800 ' + tam + 'px ' + FONT; }
+        const FOTO = 300, LH = 46;
+        medir.font = '600 34px ' + FONT;
+        const bloques = secciones.map(([t, v]) => ({ t, l: lineas(medir, v, AN) }));
+        let H = M + 56 + 34 + 30 + FOTO + 44 + tam + 18 + (e.lugar ? 40 : 0) + 30;
+        for (const b of bloques) H += 26 + 50 + b.l.length * LH + 10;
+        H += 60 + 30 + M;
+        const cv = document.createElement('canvas'); cv.width = W; cv.height = Math.round(H);
+        const c = cv.getContext('2d');
+        const fondo = c.createLinearGradient(0, 0, W, H); fondo.addColorStop(0, '#E6DAFA'); fondo.addColorStop(1, '#F9E1FF');
+        c.fillStyle = fondo; c.fillRect(0, 0, W, H);
+        c.fillStyle = '#FFFFFF'; c.beginPath(); c.roundRect(M, M, W - 2 * M, H - 2 * M, 44); c.fill();
+        c.textAlign = 'center'; c.textBaseline = 'alphabetic';
+        let y = M + 56 + 24;
+        c.fillStyle = '#7E84AE'; c.font = '700 26px ' + FONT; c.fillText('BIENVENIDA AL CLUB 365 · FEMINARIO', W / 2, y);
+        y += 34 + 30;
+        const cx = W / 2, cy = y + FOTO / 2, r = FOTO / 2;
+        c.fillStyle = '#7E84AE'; c.beginPath(); c.arc(cx, cy, r + 10, 0, 7); c.fill();
+        c.fillStyle = '#FFFFFF'; c.beginPath(); c.arc(cx, cy, r + 4, 0, 7); c.fill();
+        c.save(); c.beginPath(); c.arc(cx, cy, r, 0, 7); c.clip();
+        c.fillStyle = '#F9E1FF'; c.fillRect(cx - r, cy - r, FOTO, FOTO);
+        if (foto) {
+          if (e.foto) { const k = Math.max(FOTO / foto.width, FOTO / foto.height); c.drawImage(foto, cx - foto.width * k / 2, cy - foto.height * k / 2, foto.width * k, foto.height * k); }
+          else { const k = FOTO * 0.55 / foto.width; c.drawImage(foto, cx - foto.width * k / 2, cy - foto.height * k / 2, foto.width * k, foto.height * k); }
+        }
+        c.restore();
+        y += FOTO + 44 + tam * 0.8;
+        c.fillStyle = '#7E84AE'; c.font = '800 ' + tam + 'px ' + FONT; c.fillText(e.nombre, W / 2, y);
+        y += tam * 0.2 + 18;
+        if (e.lugar) { y += 28; c.fillStyle = '#5E5C7A'; c.font = '600 30px ' + FONT; c.fillText(e.lugar, W / 2, y); y += 12; }
+        y += 30;
+        c.textAlign = 'left';
+        for (const b of bloques) {
+          y += 26 + 8; c.fillStyle = '#CEA2DD'; c.fillRect(X, y - 30, 8, 30); c.fillStyle = '#7E84AE'; c.font = '700 22px ' + FONT; c.fillText(b.t, X + 20, y - 6);
+          y += 42; c.fillStyle = '#2B2A47'; c.font = '600 34px ' + FONT;
+          for (const l of b.l) { c.fillText(l, X, y); y += LH; }
+          y += 10;
+        }
+        c.textAlign = 'center'; c.fillStyle = '#7E84AE'; c.font = '700 24px ' + FONT;
+        c.fillText('Feminario · Autonomía financiera por y para las mujeres', W / 2, H - M - 40);
+        return await new Promise((res) => cv.toBlob(res, 'image/png'));
+      })();
+      tarjetaLista.then((b) => { if (b) $('#tarjetaImg').src = URL.createObjectURL(b); });
     }
-    // Un solo botón: copia tu presentación y abre el grupo en una pestaña nueva
-    // El enlace se abre solo (target=_blank): aquí NO se cancela el clic ni se espera nada, para que el navegador no bloquee la pestaña
-    $('#grupo').addEventListener('click', () => {
+    // Copia la imagen de la tarjeta (la copia empieza dentro del clic, como exigen los navegadores)
+    function copiarTarjeta() {
+      if (!tarjetaLista || !window.ClipboardItem || !navigator.clipboard || !navigator.clipboard.write) return Promise.resolve(false);
+      return navigator.clipboard.write([new ClipboardItem({ 'image/png': tarjetaLista })]).then(() => true, () => false);
+    }
+    function avisar(ok) {
       const a = $('#avisoCopiado'); a.hidden = false;
-      a.textContent = 'Tu presentación se está copiando. En el grupo, pégala y envía.';
-      copiarPresentacion().then((ok) => {
-        a.textContent = ok ? '✅ Tu presentación ya está copiada. En el grupo, pégala y envía.' : 'No pudimos copiarla sola. Selecciona el texto de tu tarjeta, cópialo y pégalo en el grupo.';
-      });
-    });
+      a.textContent = ok ? '✅ Tu tarjeta ya está copiada. En el chat del grupo, pégala (Ctrl+V, o mantén pulsado y pega) y envía.' : 'No pudimos copiarla sola. Haz clic derecho (o mantén pulsada) sobre la tarjeta y elige «Copiar imagen».';
+      const b = $('#copiarTarjeta'); if (ok) { b.classList.add('listo'); setTimeout(() => b.classList.remove('listo'), 2000); }
+    }
+    $('#copiarTarjeta').addEventListener('click', () => { copiarTarjeta().then(avisar); });
+    // El enlace se abre solo en una pestaña nueva (target=_blank): aquí no se cancela el clic ni se espera nada
+    $('#grupo').addEventListener('click', () => { copiarTarjeta().then(avisar); });
     // ───────── Carrusel ─────────
     let slide = 0, timerCarrusel;
     function iniciarCarrusel() {
@@ -528,22 +589,6 @@
         if (Date.now() < fin && ps.some((p) => p.y < H + 20)) requestAnimationFrame(paso); else cv.remove();
       })();
     }
-    // Compartir foto + texto con el menú del celular (el usuario elige WhatsApp y el grupo)
-    async function archivoFoto() {
-      const e = leer(LS_ENVIADO); if (!e || !e.foto) return null;
-      const b = await (await fetch(e.foto)).blob();
-      return new File([b], 'mi-foto.jpg', { type: b.type || 'image/jpeg' });
-    }
-    (async () => {
-      try {
-        const f = await archivoFoto(); const e = leer(LS_ENVIADO);
-        if (f && e && navigator.canShare && navigator.canShare({ files: [f], text: e.texto })) $('#compartir').hidden = false;
-      } catch (x) {}
-    })();
-    $('#compartir').addEventListener('click', async () => {
-      try { const f = await archivoFoto(); await navigator.share({ files: [f], text: leer(LS_ENVIADO).texto }); }
-      catch (x) { /* cancelado o no disponible */ }
-    });
     $('#otroPerfil').addEventListener('click', () => { borrar(LS_ENVIADO); borrar('club365_hecho'); borrar(LS_BORRADOR); location.href = location.pathname + '?nuevo=1'; });
 
     // ───────── Arranque ─────────
