@@ -106,6 +106,19 @@
     .aviso { background: var(--lima); color: #2F3B12; font-weight: 700; font-size: 13.5px; border-radius: 12px; padding: 10px 12px; text-align: center; }
     .nuevo { display: block; text-align: center; margin-top: 20px; font-size: 13px; color: var(--suave); }
     .nuevo a { color: var(--azul-fuerte); font-weight: 600; cursor: pointer; }
+    /* Carrusel */
+    .carrusel { position: relative; margin: 22px 0 0; border-radius: 20px; overflow: hidden; background: var(--rosa); aspect-ratio: 16 / 10; box-shadow: 0 8px 24px rgba(126,132,174,.22); }
+    .carrusel .pista { display: flex; height: 100%; transition: transform .5s ease; }
+    .carrusel .pista img { flex: none; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+    .carrusel .puntos { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; justify-content: center; gap: 7px; }
+    .carrusel .puntos button { width: 9px; height: 9px; padding: 0; border-radius: 50%; background: rgba(255,255,255,.6); box-shadow: 0 0 4px rgba(0,0,0,.3); }
+    .carrusel .puntos button.activo { background: #fff; transform: scale(1.3); }
+    .frase-final { text-align: center; font-weight: 800; font-size: clamp(17px, 4.6vw, 21px); line-height: 1.4; color: var(--azul); margin: 22px 4px 4px; }
+    .cerrar { margin-top: 16px; width: 100%; background: var(--lima); color: #2F3B12; }
+    .pendiente { text-align: center; font-size: 12.5px; color: var(--suave); margin: 8px 0 0; min-height: 18px; }
+    .despedida { text-align: center; padding: 30px 8px; }
+    .despedida h2 { font-size: 28px; }
+    #confeti { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
     footer { text-align: center; font-size: 12px; color: var(--suave); margin-top: 22px; }
     footer img { width: 28px; height: 28px; vertical-align: middle; margin-right: 6px; }
   </style>
@@ -113,12 +126,12 @@
 <body>
   <header class="hero">
     <img class="logo" src="assets/logo-nombre.png" alt="Feminario">
-    <h1 id="tituloHero">¡Bienvenida al Club 365! Cuéntanos quién eres 💜</h1>
+    <h1 id="tituloHero">¡Bienvenida al Club 365! Cuéntanos quién eres</h1>
     <p id="textoHero">Este formulario nos ayuda a conocerte y a presentarte a las demás mujeres de la comunidad. Toma menos de 5 minutos.</p>
   </header>
 
   <main class="contenedor">
-    <div class="portada"><img id="portadaImg" src="assets/foto-fundadoras.jpg" alt="Andrea y Valentina, fundadoras de Feminario"><div class="portada-msg" id="portadaMsg" hidden>Gracias por ser parte de la revolución que está por y para la autonomía económica de las mujeres.<small>Esto es solo el inicio 💜</small></div></div>
+    <div class="portada"><img id="portadaImg" src="assets/foto-fundadoras.jpg" alt="Andrea y Valentina, fundadoras de Feminario"><div class="portada-msg" id="portadaMsg" hidden>Gracias por ser parte de la revolución que está por y para la autonomía económica de las mujeres.<small>Esto es solo el inicio.</small></div></div>
 
     <div class="tarjeta" id="tarjeta">
       <div class="progreso" id="progreso" aria-hidden="true"><span class="activo"></span><span></span><span></span></div>
@@ -244,7 +257,7 @@
           <p class="error" id="error" role="alert"></p>
           <div class="botones">
             <button type="button" class="secundario" data-atras>Atrás</button>
-            <button type="submit" class="primario" id="enviar">Enviar y unirme 💜</button>
+            <button type="submit" class="primario" id="enviar">Enviar y unirme</button>
           </div>
         </section>
         <p class="guardado" id="guardado" aria-live="polite"></p>
@@ -264,6 +277,18 @@
           <a class="boton primario grande" id="grupo" target="_blank" rel="noopener">💬 Enviar al grupo y presentarme</a>
           <div class="aviso" id="avisoCopiado" hidden></div>
         </div>
+        <div class="carrusel" id="carrusel" aria-label="Fotos de la comunidad">
+          <div class="pista" id="pista">
+            <img src="assets/foto-comunidad.jpg" alt="La comunidad de Feminario reunida" loading="lazy">
+            <img src="assets/foto-cena.jpg" alt="Mujeres de Feminario compartiendo en un restaurante" loading="lazy">
+            <img src="assets/foto-alegria.jpg" alt="Bailando de alegría" loading="lazy">
+            <img src="assets/foto-fundadoras.jpg" alt="Andrea y Valentina, fundadoras de Feminario" loading="lazy">
+          </div>
+          <div class="puntos" id="puntos"></div>
+        </div>
+        <p class="frase-final">Tu camino para mejorar tus finanzas y crear tu autonomía económica para la vida que quieres comienza hoy.</p>
+        <button type="button" class="cerrar" id="cerrar" disabled>Nos vemos pronto</button>
+        <p class="pendiente" id="pendiente" aria-live="polite"></p>
         <p class="nuevo">¿No eres tú? <a id="otroPerfil">Llenar otro perfil</a></p>
       </section>
     </div>
@@ -421,14 +446,14 @@
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         terminar(fila);
       } catch (err) {
-        boton.disabled = false; boton.textContent = 'Enviar y unirme 💜';
+        boton.disabled = false; boton.textContent = 'Enviar y unirme';
         mostrarError('Algo salió mal al enviar. Revisa tu conexión e inténtalo de nuevo, por favor.');
       }
     });
     function terminar(fila) {
       const nombre = fila.como_te_llaman || fila.nombre_completo;
       const donde = [fila.ciudad, fila.pais].filter(Boolean).join(', ');
-      const texto = `¡Hola, comunidad! 💜 Soy ${nombre}${donde ? ' de ' + donde : ''}.\n💼 ${fila.ocupacion}\n🎨 Hobbies: ${fila.hobbies}\n✨ Dato curioso: ${fila.dato_curioso}\n🌸 Entré a Feminario porque: ${fila.razon}`;
+      const texto = `¡Hola, comunidad! Soy ${nombre}${donde ? ' de ' + donde : ''}.\n💼 ${fila.ocupacion}\n🎨 Hobbies: ${fila.hobbies}\n✨ Dato curioso: ${fila.dato_curioso}\n🌸 Entré a Feminario porque: ${fila.razon}`;
       guardar(LS_ENVIADO, { nombre, texto, lugar: donde, foto: fotoDataUrl });
       borrar(LS_BORRADOR);
       pintarExito();
@@ -449,9 +474,11 @@
       $('#portadaImg').src = 'assets/foto-alegria.jpg';
       $('#portadaImg').alt = 'Gracias por ser parte de la revolución';
       $('#portadaMsg').hidden = false;
-      $('#tituloHero').textContent = `¡Bienvenida a la comunidad, ${e.nombre}! 💜`;
+      $('#tituloHero').textContent = `¡Bienvenida a la comunidad, ${e.nombre}!`;
       $('#textoHero').textContent = 'Ya eres parte del Club 365. Esta es tu tarjeta de presentación.';
       form.hidden = true; $('#progreso').hidden = true; $('#exito').hidden = false;
+      iniciarCarrusel(); actualizarCierre();
+      if (!sessionStorage.getItem('club365_confeti')) { try { sessionStorage.setItem('club365_confeti', '1'); } catch (x) {} confeti(); }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     // Copia la presentación (con alternativa para navegadores antiguos)
@@ -471,10 +498,61 @@
       const ok = await copiarPresentacion();
       const a = $('#avisoCopiado'); a.hidden = false;
       a.textContent = ok ? '✅ Tu presentación ya está copiada. En el grupo, pégala y envía.' : 'No pudimos copiarla sola. Selecciona el texto de tu tarjeta, cópialo y pégalo en el grupo.';
-      const w = window.open(GRUPO_WHATSAPP, '_blank', 'noopener');
-      if (!w) location.href = GRUPO_WHATSAPP;
+      window.open(GRUPO_WHATSAPP, '_blank', 'noopener');   // pestaña nueva; esta página se queda como está
+      marcar('grupo');
     });
-    $('#otroPerfil').addEventListener('click', () => { borrar(LS_ENVIADO); borrar(LS_BORRADOR); location.href = location.pathname + '?nuevo=1'; });
+    $('#calendario').addEventListener('click', () => marcar('cal'));
+    $('#calApple').addEventListener('click', () => marcar('cal'));
+
+    // ───────── Checklist: "Nos vemos pronto" se activa al hacer ambas cosas ─────────
+    const LS_HECHO = 'club365_hecho';
+    function marcar(k) { const h = leer(LS_HECHO) || {}; h[k] = true; guardar(LS_HECHO, h); actualizarCierre(); }
+    function actualizarCierre() {
+      const h = leer(LS_HECHO) || {};
+      const falta = [];
+      if (!h.cal) falta.push('sincronizar los eventos');
+      if (!h.grupo) falta.push('enviar tu presentación al grupo');
+      $('#cerrar').disabled = falta.length > 0;
+      $('#pendiente').textContent = falta.length ? 'Para terminar, falta: ' + falta.join(' y ') + '.' : '';
+    }
+    $('#cerrar').addEventListener('click', () => {
+      $('#exito').innerHTML = '<div class="despedida"><h2>¡Nos vemos pronto!</h2><p class="sub">Ya puedes cerrar esta pestaña.</p></div>';
+      $('#tituloHero').textContent = '¡Nos vemos pronto!'; $('#textoHero').textContent = 'Gracias por ser parte de la comunidad.';
+      confeti(); try { window.close(); } catch (e) {}
+    });
+
+    // ───────── Carrusel ─────────
+    let slide = 0, timerCarrusel;
+    function iniciarCarrusel() {
+      const n = $('#pista').children.length, cont = $('#puntos');
+      if (cont.children.length) return;
+      for (let i = 0; i < n; i++) { const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Foto ' + (i + 1)); b.addEventListener('click', () => { ver(i); reiniciar(); }); cont.appendChild(b); }
+      const reiniciar = () => { clearInterval(timerCarrusel); timerCarrusel = setInterval(() => ver((slide + 1) % n), 4000); };
+      let x0 = null; const c = $('#carrusel');
+      c.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+      c.addEventListener('touchend', (e) => { if (x0 === null) return; const d = e.changedTouches[0].clientX - x0; if (Math.abs(d) > 40) { ver((slide + (d < 0 ? 1 : n - 1)) % n); reiniciar(); } x0 = null; });
+      ver(0); reiniciar();
+    }
+    function ver(i) {
+      slide = i; $('#pista').style.transform = `translateX(-${i * 100}%)`;
+      [...$('#puntos').children].forEach((b, j) => b.classList.toggle('activo', j === i));
+    }
+
+    // ───────── Confeti (sin librerías) ─────────
+    function confeti() {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const cv = document.createElement('canvas'); cv.id = 'confeti'; document.body.appendChild(cv);
+      const ctx = cv.getContext('2d'); const W = cv.width = innerWidth, H = cv.height = innerHeight;
+      const col = ['#7E84AE', '#C2CBFF', '#CEA2DD', '#DFF3AF', '#F59356', '#F7C175', '#F9E1FF'];
+      const ps = Array.from({ length: 140 }, () => ({ x: Math.random() * W, y: -20 - Math.random() * H * 0.6, w: 6 + Math.random() * 7, h: 8 + Math.random() * 8, vy: 2.5 + Math.random() * 3.5, vx: -1.5 + Math.random() * 3, a: Math.random() * 6, va: -0.2 + Math.random() * 0.4, c: col[(Math.random() * col.length) | 0] }));
+      const fin = Date.now() + 4500;
+      (function paso() {
+        ctx.clearRect(0, 0, W, H);
+        for (const p of ps) { p.x += p.vx; p.y += p.vy; p.a += p.va; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore(); }
+        if (Date.now() < fin && ps.some((p) => p.y < H + 20)) requestAnimationFrame(paso); else cv.remove();
+      })();
+    }
+    $('#otroPerfil').addEventListener('click', () => { borrar(LS_ENVIADO); borrar('club365_hecho'); borrar(LS_BORRADOR); location.href = location.pathname + '?nuevo=1'; });
 
     // ───────── Arranque ─────────
     const q = new URLSearchParams(location.search);
