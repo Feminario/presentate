@@ -10,6 +10,9 @@ correo/bienvenida-kajabi.html Correo automático de bienvenida (HTML para Kajabi
 supabase/perfiles.sql         Tabla, seguridad y bucket de fotos (ya aplicado en Supabase)
 ```
 
+## Pantalla final (el grupo es por solicitud)
+Al enviar, se abre una ventana con los 4 pasos: guardar la tarjeta → solicitar unirse al grupo de WhatsApp → esperar la aceptación → presentarse con la tarjeta guardada. El botón **Guardar mi tarjeta** descarga la imagen (en el celular abre «Guardar imagen» del menú de compartir). La tarjeta queda en el navegador de la persona, así que puede volver al mismo enlace y encontrarla para guardarla o copiarla.
+
 ## Cómo se actualizan los eventos
 Edita `calendario/club-365-2027.ics`, agrega o cambia un bloque `BEGIN:VEVENT … END:VEVENT`, súbelo (commit + push) y las clientas lo ven en su calendario en unas horas, sin hacer nada.
 
